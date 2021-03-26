@@ -1,1 +1,1 @@
-CREATE TABLE TEST AS SELECT * FROM CSVREAD('14Tickers_210113_210113.csv'); <<from h2 docu>>
+CREATE TABLE TICKER AS SELECT * FROM CSVREAD('/home/wzor/Рабочий стол/BestHack/clay/clay-api/src/main/resources/db/changelog/release-0.1.0/14Tickers_210113_210113.csv');

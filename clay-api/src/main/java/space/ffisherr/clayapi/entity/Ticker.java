@@ -18,10 +18,10 @@ public class Ticker {
     @SequenceGenerator(name = "id_seq", sequenceName = "ticker_seq_id")
     private Long id;
     private String ticker;
-    private Integer time;
-    private Long open;
-    private Long hight;
-    private Long low;
-    private Long close;
-    private Long vol;
+    private String  time;
+    private String open;
+    private String  hight;
+    private String  low;
+    private String  close;
+    private String  vol;
 }

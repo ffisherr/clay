@@ -11,13 +11,14 @@ import space.ffisherr.clayapi.repository.InstrumentRepository;
 
 @Slf4j
 @RestController
+@RequestMapping("/ticker/")
 @RequiredArgsConstructor
 public class TickerController {
 
     private final InstrumentRepository repository;
 
     @GetMapping
-    public Ticker readAllByTicker(@RequestParam String tickerName, Integer timeVal) {
+    public Ticker readAllByTicker(@RequestParam String tickerName, String timeVal) {
         return repository.findByTicker(tickerName, timeVal).orElse(null);
     }
 

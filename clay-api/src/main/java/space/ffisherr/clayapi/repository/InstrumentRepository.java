@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface InstrumentRepository extends CrudRepository<Ticker, Long> {
 
-    @Query("select c from Countries c where c.ticker = :tickerName and c.time = timeVal")
-    Optional<Ticker> findByTicker(@Param("tickerName") String tickerName, @Param("timeVal") Integer timeVal);
+    @Query("select c from Ticker c where c.ticker = :tickerName and c.time = :timeVal")
+    Optional<Ticker> findByTicker(@Param("tickerName") String tickerName, @Param("timeVal") String timeVal);
 
 }
