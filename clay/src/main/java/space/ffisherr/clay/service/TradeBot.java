@@ -27,7 +27,7 @@ public class TradeBot {
     private final HistoryService historyService;
     private final RsiCounterService rsiCounterService = new RsiCounterService();
 
-    public void doWork(Timestamp startedAt, Timestamp endedAt) {
+    public void doWork(String startedAt, String endedAt) {
         final int startTimeInt = Integer.parseInt(convertToString(startedAt));
         final int endTimeInt = Integer.parseInt(convertToString(endedAt));
         final List<Bag> bagList = bagService.readAll();
@@ -102,7 +102,8 @@ public class TradeBot {
                 response.getBoughtTicker().longValue(), step);
     }
 
-    protected String convertToString(Timestamp timestamp) {
-        return String.format("%02d%02d%02d", timestamp.getHours(), timestamp.getMinutes(), timestamp.getSeconds());
+    protected String convertToString(String timestamp) {
+        final String[] arr = timestamp.split(":");
+        return arr[0]+arr[1]+"00";
     }
 }

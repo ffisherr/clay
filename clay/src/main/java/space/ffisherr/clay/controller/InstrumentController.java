@@ -58,8 +58,8 @@ public class InstrumentController {
     }
 
     @PostMapping("/start-trading/")
-    public void startTrading(@RequestParam Timestamp startTime,
-                             @RequestParam Timestamp endTime) {
+    public void startTrading(@RequestParam String startTime,
+                             @RequestParam String endTime) {
         tradeBot.doWork(startTime, endTime);
     }
 

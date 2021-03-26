@@ -19,7 +19,6 @@ import space.ffisherr.clay.model.TransactionRequestDTO;
 import space.ffisherr.clay.model.TransactionResponseDTO;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             response = restTemplate.exchange(url, HttpMethod.GET, request, ClayInstrument.class);
         } catch (Exception e) {
-            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
+//            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
         }
         if (response != null) {
             return response.getBody();
@@ -109,7 +108,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             response = restTemplate.exchange(url, HttpMethod.POST, request, TransactionResponseDTO.class);
         } catch (Exception e) {
-            log.warn("Error while sending request to ptk {} : {}", url, e.getMessage());
+//            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
         }
         return response;
     }

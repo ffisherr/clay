@@ -3,6 +3,7 @@ import TableGraph from './TableGraph';
 import './styles.css';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 import {DropdownButton, Dropdown} from 'react-bootstrap';
+import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 
 
 class GraphData extends Component {
@@ -10,7 +11,8 @@ class GraphData extends Component {
   state = {
       myInstruments: [],
       activeInstrument: '',
-      plotData: []
+      plotData: [],
+      timeRange: ["10:00", "18:00"]
   }
 
   handleSelect(e) {
@@ -54,9 +56,22 @@ class GraphData extends Component {
     );
   }
 
+  handleRange(e) {
+    this.setState({timeRange: e});
+    console.log(this.state.timeRange);
+  }
+
 
   componentDidMount() {
       this.fetchData();
+  }
+
+  handleStartTrade(e) {
+    const timeRange = this.state.timeRange;
+    const requestOptions = {
+        method: 'POST',
+    };
+    fetch('http://localhost:8081/instruments/start-trading/?startTime=' + timeRange[0] + '&endTime=' + timeRange[1], requestOptions)
   }
 
   render() {
@@ -68,6 +83,8 @@ class GraphData extends Component {
                     <li key={instrument.id}>{instrument.name}</li>
                     ))}
               </ul>
+              <TimeRangePicker value={this.state.timeRange} onChange={this.handleRange.bind(this)} />
+              <button onClick={this.handleStartTrade.bind(this)}>Запустить торги</button>
               <DropdownButton id="dropdown-basic-button" title={this.state.activeInstrument}>
                 {this.state.myInstruments.map(instrument => (
                 <Dropdown.Item key={instrument.id} onClick= {this.handleSelect.bind(this)}>{instrument.name}</Dropdown.Item>))}
