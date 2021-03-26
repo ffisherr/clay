@@ -21,7 +21,7 @@ class GraphData extends Component {
   }
 
   drowChart(e){
-    fetch("http://localhost:8081/instruments/history/" + e)
+    fetch("http://localhost:8081/instruments/history/read-by-name/" + e)
     .then(res => res.json())
     .then(
       (res) => {

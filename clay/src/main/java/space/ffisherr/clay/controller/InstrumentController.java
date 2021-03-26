@@ -1,15 +1,12 @@
 package space.ffisherr.clay.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.ffisherr.clay.entity.Bag;
 import space.ffisherr.clay.entity.History;
 import space.ffisherr.clay.entity.WantedInstruments;
 import space.ffisherr.clay.model.ClayInstrument;
+import space.ffisherr.clay.model.PlotXY;
 import space.ffisherr.clay.service.BagService;
 import space.ffisherr.clay.service.HistoryService;
 import space.ffisherr.clay.service.InstrumentService;
@@ -48,6 +45,11 @@ public class InstrumentController {
     @GetMapping("/bag/read-all/")
     public List<Bag> readAllBags() {
         return bagService.readAll();
+    }
+
+    @GetMapping("/history/read-by-name/{name}")
+    public  List<PlotXY> findByNameHistory(@PathVariable String name){
+        return historyService.readByName(name);
     }
 
     @PostMapping("/add-instrument/")

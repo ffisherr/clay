@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.ffisherr.clay.entity.Bag;
 import space.ffisherr.clay.entity.History;
+import space.ffisherr.clay.model.PlotXY;
 import space.ffisherr.clay.repository.HistoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +19,19 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<History> readAll() {
         return (List<History>)repository.findAll();
+    }
+
+    @Override
+    public List<PlotXY> readByName(String name){
+        final List<History> h = repository.findByInstrument(name);
+        final List<PlotXY> p = new ArrayList<>();
+        h.forEach(hi -> {
+            PlotXY xy = new PlotXY();
+            xy.setX(hi.getCreatedAt());
+            xy.setY(hi.getTotalAmount());
+            p.add(xy);
+        });
+        return p;
     }
 
     @Override
