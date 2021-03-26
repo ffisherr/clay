@@ -1,9 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component  } from 'react';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    TimePicker,
+  } from '@material-ui/pickers';
 
 class Manager extends Component {
 
   state = {
       myInstruments: [],
+      selectedDate: null
   }
 
   fethData() {
@@ -17,7 +23,7 @@ class Manager extends Component {
       (error) => {
           console.log(error);
           this.setState({
-              selected: false,
+            myInstruments: [],
           });
       }
     );
@@ -25,8 +31,14 @@ class Manager extends Component {
 
   componentDidMount() {
       this.fethData();
+      this.setState({selectedDate: new Date()})
   }
 
+  handleTime(e) {
+      console.log('Time: ', e.target.value);
+      this.setState({selectedDate: e.target.value});
+  }
+  
   render() {
       return (
           <div>
@@ -36,6 +48,9 @@ class Manager extends Component {
                     <li key={instrument.id}>{instrument.name}</li>
                     ))}
               </ul>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <TimePicker value={this.state.selectedDate} onChange={this.handleTime.bind(this)} ampm={false} />
+              </MuiPickersUtilsProvider>
               
           </div>
       );
