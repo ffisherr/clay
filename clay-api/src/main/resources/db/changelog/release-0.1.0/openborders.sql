@@ -1,0 +1,1 @@
+CREATE TABLE TEST AS SELECT * FROM CSVREAD('14Tickers_210113_210113.csv'); <<from h2 docu>>
