@@ -47,7 +47,7 @@ public class TradeBot {
         final ClayInstrument clay = integrationService.readTicker(bag.getWantedInstrument().getName(),
                 String.valueOf(step));
         if (clay == null) {
-            log.warn("На шаге {} данные отсутствуют", step);
+//            log.warn("На шаге {} данные отсутствуют", step);
             return;
         }
         final RsiModel model = rsiCounterService.getRsi(clay, step);
@@ -61,6 +61,7 @@ public class TradeBot {
     private void sellAll(Bag bag, int step) {
         if (bag.getInstrumentAmount() == 0) {
             log.info("Нечего продавать");
+            return;
         }
         log.info("Продаем: {} Время: {}", bag.getWantedInstrument().getName(), step);
         final TransactionRequestDTO request = new TransactionRequestDTO();
@@ -80,6 +81,7 @@ public class TradeBot {
     private void buyAll(Bag bag, int step) {
         if (bag.getAmount() == 0) {
             log.info("Нет денег для покупки");
+            return;
         }
         log.info("Покупаем: {} Время: {}", bag.getWantedInstrument().getName(), step);
         final TransactionRequestDTO request = new TransactionRequestDTO();

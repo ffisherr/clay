@@ -45,7 +45,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             response = restTemplate.exchange(url, HttpMethod.GET, request, List.class);
         } catch (Exception e) {
-            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
+//            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
         }
         final List<ClayInstrument> realResponse = (List<ClayInstrument>) response.getBody();
         return realResponse;
