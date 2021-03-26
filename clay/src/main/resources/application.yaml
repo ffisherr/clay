@@ -7,10 +7,10 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.H2Dialect
   datasource:
-    url: jdbc:h2:mem:clay
+    url: jdbc:h2:mem:clay1
     driverClassName: org.h2.Driver
     username: user
     password: password
 clay:
   integration-service:
-    url: http://localhost:8080
+    url: http://localhost:8080/ticker

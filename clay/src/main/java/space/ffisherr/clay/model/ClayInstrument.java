@@ -1,13 +1,16 @@
 package space.ffisherr.clay.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class ClayInstrument {
 
     private Long id;
-    private String name;
-
+    private String ticker;
+    private String  time;
+    private String open;
+    private String  hight;
+    private String  low;
+    private String  close;
+    private String  vol;
 }

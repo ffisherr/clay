@@ -17,7 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final InstrumentRepository repository;
 
     @Override
-    public TransactionResponseDTO userSendMoney(TransactionRequestDTO requestDTO) {
+    public TransactionResponseDTO userBuyTicker(TransactionRequestDTO requestDTO) {
          Ticker t = repository.findByTicker(requestDTO.getNameTicker(), requestDTO.getTime()).get();
         float f = Float.parseFloat(t.getClose());
 //        System.out.println(f);
@@ -30,6 +30,19 @@ public class TransactionServiceImpl implements TransactionService {
         responseDTO.setLeftMoney(intleft);
         responseDTO.setBoughtTicker(intbougth);
         responseDTO.setCostOneTicker(f);
+        return responseDTO;
+    }
+
+    @Override
+    public TransactionResponseDTO userSellTicker(TransactionRequestDTO requestDTO) {
+        Ticker t = repository.findByTicker(requestDTO.getNameTicker(), requestDTO.getTime()).get();
+        float f = Float.parseFloat(t.getClose());
+        int sold = (int) f * requestDTO.getInstrumentAmount();
+
+        final TransactionResponseDTO responseDTO = new TransactionResponseDTO();
+        responseDTO.setBoughtTicker(requestDTO.getInstrumentAmount());
+        responseDTO.setCostOneTicker(f);
+        responseDTO.setLeftMoney(requestDTO.getAllMoney() + sold);
         return responseDTO;
     }
 }

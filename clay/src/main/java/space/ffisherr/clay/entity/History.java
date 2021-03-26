@@ -27,6 +27,6 @@ public class History {
     private Long totalAmount;
     private Long oneItemCost;
     private Long leftAmount;
-    private Timestamp createdAt;
+    private Long createdAt;
 
 }

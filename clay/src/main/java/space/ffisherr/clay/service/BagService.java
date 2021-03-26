@@ -11,4 +11,5 @@ public interface BagService {
 
     void create(WantedInstruments instrument);
 
+    Bag save(Bag bag);
 }

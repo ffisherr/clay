@@ -11,6 +11,6 @@ public interface HistoryService {
 
     History create(String direction, Bag currentBag,
                    Long totalAmount, Long oneItemCost,
-                   Long purchasedNumber);
+                   Long purchasedNumber, Long step);
 
 }

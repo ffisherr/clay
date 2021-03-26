@@ -1,7 +1,6 @@
-package space.ffisherr.clayapi.model;
+package space.ffisherr.clay.model;
 
 import lombok.Data;
-
 
 @Data
 public class TransactionRequestDTO {

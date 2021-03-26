@@ -28,4 +28,9 @@ public class BagServiceImpl implements BagService {
         repository.save(bag);
     }
 
+    @Override
+    public Bag save(Bag bag) {
+        return repository.save(bag);
+    }
+
 }

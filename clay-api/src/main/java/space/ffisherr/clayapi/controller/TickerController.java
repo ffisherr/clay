@@ -3,8 +3,8 @@ package space.ffisherr.clayapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import space.ffisherr.clayapi.entity.Ticker;
 import space.ffisherr.clayapi.model.TransactionRequestDTO;
@@ -13,6 +13,7 @@ import space.ffisherr.clayapi.repository.InstrumentRepository;
 import space.ffisherr.clayapi.service.TransactionServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -24,8 +25,10 @@ public class TickerController {
     private final TransactionServiceImpl service;
 
     @GetMapping
-    public Ticker readAllByTicker(@RequestParam String tickerName, String timeVal) {
-        return repository.findByTicker(tickerName, timeVal).orElse(null);
+    public ResponseEntity<Ticker> readAllByTicker(@RequestParam String tickerName, @RequestParam String timeVal) {
+        final Optional<Ticker> optionalTicker = repository.findByTicker(tickerName, timeVal);
+        return optionalTicker.map(ticker -> new ResponseEntity<>(ticker, HttpStatus.OK))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/unique/")
@@ -33,9 +36,14 @@ public class TickerController {
         return repository.findUniqueTicker();
     }
 
-    @PostMapping("/transaction/")
-    public TransactionResponseDTO tickerTransaction(@RequestBody TransactionRequestDTO requestDTO){
-        return service.userSendMoney(requestDTO);
+    @PostMapping("/sell/")
+    public TransactionResponseDTO tickerSellTransaction(@RequestBody TransactionRequestDTO requestDTO){
+        return service.userSellTicker(requestDTO);
+    }
+
+    @PostMapping("/buy/")
+    public TransactionResponseDTO tickerBuyTransaction(@RequestBody TransactionRequestDTO requestDTO){
+        return service.userBuyTicker(requestDTO);
     }
 
 

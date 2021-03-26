@@ -14,7 +14,9 @@ import space.ffisherr.clay.service.BagService;
 import space.ffisherr.clay.service.HistoryService;
 import space.ffisherr.clay.service.InstrumentService;
 import space.ffisherr.clay.service.IntegrationService;
+import space.ffisherr.clay.service.TradeBot;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -26,6 +28,7 @@ public class InstrumentController {
     private final IntegrationService integrationService;
     private final HistoryService historyService;
     private final BagService bagService;
+    private final TradeBot tradeBot;
 
     @GetMapping("/clay/read-all/")
     public List<ClayInstrument> readAllClayInstruments() {
@@ -50,6 +53,12 @@ public class InstrumentController {
     @PostMapping("/add-instrument/")
     public void addWantedInstrument(@RequestParam String name) {
         instrumentService.addWantedInstrument(name);
+    }
+
+    @PostMapping("/start-trading/")
+    public void startTrading(@RequestParam Timestamp startTime,
+                             @RequestParam Timestamp endTime) {
+        tradeBot.doWork(startTime, endTime);
     }
 
 }

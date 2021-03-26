@@ -5,7 +5,8 @@ import space.ffisherr.clayapi.model.TransactionResponseDTO;
 
 public interface TransactionService {
 
-    TransactionResponseDTO userSendMoney(TransactionRequestDTO requestDTO);
+    TransactionResponseDTO userBuyTicker(TransactionRequestDTO requestDTO);
 
 
+    TransactionResponseDTO userSellTicker(TransactionRequestDTO requestDTO);
 }
