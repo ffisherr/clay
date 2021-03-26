@@ -35,3 +35,9 @@ create table history (
     created_at timestamp default now() not null,
     constraint PK_HISTORY_ID primary key (id)
 );
+
+insert into wanted_instruments values (-1, 'AMD');
+insert into wanted_instruments values (-2, 'McDonalds');
+insert into history values ( -1, -1, 'Продажа', 100, 5430, 150, 25000, now() );
+insert into history values ( -2, -2, 'Продажа', 450, 600,  100, 34000, now() );
+insert into history values ( -3, -1, 'Продажа', 502, 6000, 200, 1000, now() );

@@ -13,7 +13,7 @@ class Manager extends Component {
   }
 
   fethData() {
-    fetch("http://localhost:8081//instruments/my/instruments/")
+    fetch("http://localhost:8081/instruments/my/instruments/")
     .then(res => res.json())
     .then(
       (res) => {
@@ -48,9 +48,6 @@ class Manager extends Component {
                     <li key={instrument.id}>{instrument.name}</li>
                     ))}
               </ul>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <TimePicker value={this.state.selectedDate} onChange={this.handleTime.bind(this)} ampm={false} />
-              </MuiPickersUtilsProvider>
               
           </div>
       );
