@@ -1,11 +1,14 @@
+import React, { Component } from 'react';
 import './App.css';
+import Manager from './Manager.js';
 
-function App() {
-  return (
-    <div className="App">
-      <p>It works</p>
-    </div>
-  );
+class App extends Component {
+
+  render() {
+    return (
+      <Manager />
+    );
+  }
 }
 
 export default App;
