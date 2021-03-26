@@ -18,6 +18,7 @@ import space.ffisherr.clay.model.ClayInstrument;
 import space.ffisherr.clay.model.TransactionRequestDTO;
 import space.ffisherr.clay.model.TransactionResponseDTO;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,15 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
 //            log.warn("Error while sending request to api {} : {}", url, e.getMessage());
         }
-        final List<ClayInstrument> realResponse = (List<ClayInstrument>) response.getBody();
+        final List<ClayInstrument> realResponse = new ArrayList<>();
+        int k = 0;
+        for (Object o: response.getBody()) {
+            final ClayInstrument clay = new ClayInstrument();
+            clay.setId((long) k);
+            clay.setTicker((String) o);
+            realResponse.add(clay);
+            k++;
+        }
         return realResponse;
     }
 

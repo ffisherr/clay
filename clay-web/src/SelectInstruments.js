@@ -12,6 +12,7 @@ class SelectInstruments extends Component {
           .then(res => res.json())
           .then(
             (res) => {
+                console.log(res);
               const locSel = new Map();
               res.map(instrument => (
                   locSel.set(instrument.id.toString(), false)
@@ -67,8 +68,8 @@ class SelectInstruments extends Component {
                 {this.state.avaliableInstruments.map(instrument => (
                     <p key={instrument.id}>
                         <label>
-                            <input type="checkbox" name={instrument.name} onChange={this.handleSelect.bind(this)} />
-                            {instrument.name}
+                            <input type="checkbox" name={instrument.ticker} onChange={this.handleSelect.bind(this)} />
+                            {instrument.ticker}
                         </label>
                     </p>
                 ))}
