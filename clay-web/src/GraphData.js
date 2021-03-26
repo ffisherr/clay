@@ -1,18 +1,43 @@
-import React, { Component  } from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    TimePicker,
-  } from '@material-ui/pickers';
+import React, { Component } from 'react';
+import TableGraph from './TableGraph';
+import './styles.css';
+import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
+import {DropdownButton, Dropdown} from 'react-bootstrap';
 
-class Manager extends Component {
+
+class GraphData extends Component {
 
   state = {
       myInstruments: [],
-      selectedDate: null
+      activeInstrument: '',
+      plotData: []
   }
 
-  fethData() {
+  handleSelect(e) {
+    console.log(e.nativeEvent.target.text);
+    this.setState({activeInstrument: e.nativeEvent.target.text});
+    this.drowChart(e.nativeEvent.target.text);
+
+  }
+
+  drowChart(e){
+    fetch("http://localhost:8081/instruments/history/" + e)
+    .then(res => res.json())
+    .then(
+      (res) => {
+        console.log(res);
+        this.setState({plotData: res});
+      },
+      (error) => {
+          console.log(error);
+          this.setState({
+              selected: false,
+          });
+      }
+    );
+  }
+
+  fetchData() {
     fetch("http://localhost:8081/instruments/my/instruments/")
     .then(res => res.json())
     .then(
@@ -23,22 +48,17 @@ class Manager extends Component {
       (error) => {
           console.log(error);
           this.setState({
-            myInstruments: [],
+              selected: false,
           });
       }
     );
   }
 
+
   componentDidMount() {
-      this.fethData();
-      this.setState({selectedDate: new Date()})
+      this.fetchData();
   }
 
-  handleTime(e) {
-      console.log('Time: ', e.target.value);
-      this.setState({selectedDate: e.target.value});
-  }
-  
   render() {
       return (
           <div>
@@ -48,10 +68,23 @@ class Manager extends Component {
                     <li key={instrument.id}>{instrument.name}</li>
                     ))}
               </ul>
-              
+              <DropdownButton id="dropdown-basic-button" title={this.state.activeInstrument}>
+                {this.state.myInstruments.map(instrument => (
+                <Dropdown.Item key={instrument.id} onClick= {this.handleSelect.bind(this)}>{instrument.name}</Dropdown.Item>))}
+              </DropdownButton>
+              <XYPlot
+                width={1000}
+                height={300}>
+                <HorizontalGridLines />
+                <LineSeries
+                  data={this.state.plotData}/>
+                <XAxis />
+                <YAxis />
+              </XYPlot>              
+              <TableGraph />
           </div>
       );
   }
 }
 
-export default Manager;
+export default GraphData;
