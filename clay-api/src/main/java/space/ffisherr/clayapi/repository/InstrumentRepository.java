@@ -13,4 +13,7 @@ public interface InstrumentRepository extends CrudRepository<Ticker, Long> {
     @Query("select c from Ticker c where c.ticker = :tickerName and c.time = :timeVal")
     Optional<Ticker> findByTicker(@Param("tickerName") String tickerName, @Param("timeVal") String timeVal);
 
+    @Query("SELECT DISTINCT t.ticker FROM Ticker t ORDER BY t.ticker")
+    List<String> findUniqueTicker();
+
 }
