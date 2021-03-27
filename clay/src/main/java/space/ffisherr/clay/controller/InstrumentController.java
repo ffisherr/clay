@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -57,7 +58,15 @@ public class InstrumentController {
 
     @PostMapping("/add-instrument/")
     public void addWantedInstrument(@RequestParam String name) {
+        if (name == null || name.isEmpty()) {
+            return;
+        }
         instrumentService.addWantedInstrument(name);
+    }
+
+    @PostMapping("/add-instruments/")
+    public void addInstruments(@RequestBody String instruments) {
+        Arrays.stream(instruments.split(",")).forEach(this::addWantedInstrument);
     }
 
     @PostMapping("/start-trading/")

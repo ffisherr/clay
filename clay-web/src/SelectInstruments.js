@@ -12,7 +12,6 @@ class SelectInstruments extends Component {
           .then(res => res.json())
           .then(
             (res) => {
-                console.log(res);
               const locSel = new Map();
               res.map(instrument => (
                   locSel.set(instrument.id.toString(), false)
@@ -32,11 +31,15 @@ class SelectInstruments extends Component {
           );
     }
 
-    addInstrument(instrumentId) {
-        const query = 'http://localhost:8081/instruments/add-instrument/?name=' + instrumentId;
+    addInstrument(selectedItems) {
+        const query = 'http://localhost:8081/instruments/add-instruments/';
+        console.log('Запрос по ', selectedItems, query);
         const requestOptions = {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: selectedItems
         };
+        console.log(JSON.stringify({ selectedItems }));
         fetch(query, requestOptions);
     }
 
@@ -45,11 +48,15 @@ class SelectInstruments extends Component {
     }
 
     handleSubmit(e) {
+        let selectedItems = '';
         for (var [key, value] of this.state.selected) {
+            console.log('Статус', key, value);
             if (value) {
-                this.addInstrument(key);
+                selectedItems += ',' + key;
             }
         }
+        this.addInstrument(selectedItems);
+        console.log(selectedItems);
         window.location.reload();
     }
 
