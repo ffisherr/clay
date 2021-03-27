@@ -77,12 +77,6 @@ class GraphData extends Component {
   render() {
       return (
           <div>
-              <ul>
-                  <b>Текущие инструменты</b>
-                {this.state.myInstruments.map(instrument => (
-                    <li key={instrument.id}>{instrument.name}</li>
-                    ))}
-              </ul>
               <TimeRangePicker value={this.state.timeRange} onChange={this.handleRange.bind(this)} />
               <button onClick={this.handleStartTrade.bind(this)}>Запустить торги</button>
               <DropdownButton id="dropdown-basic-button" title={this.state.activeInstrument}>
