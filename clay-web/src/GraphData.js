@@ -13,7 +13,7 @@ class GraphData extends Component {
       plotData: [],
       timeRange: ["10:00", "18:00"],
       transactions: [],
-      inAction: false
+      inAction: false,
   }
 
   handleSelect(e) {
@@ -22,6 +22,10 @@ class GraphData extends Component {
     this.drowChart(e.nativeEvent.target.text);
     this.fetchHistory(e.nativeEvent.target.text);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.myInterval);
+}
 
   drowChart(e){
     fetch("http://localhost:8081/instruments/history/read-by-name/" + e)
@@ -93,8 +97,14 @@ class GraphData extends Component {
   componentDidMount() {
       this.fetchData();
       this.fetchHistory();
-
-  }
+      this.myInterval = setInterval(() => {
+        const param = this.state.activeInstrument;
+        if (param) {
+          this.drowChart(param);
+          this.fetchHistory(param);
+        }
+    }, 1000);
+}
 
   handleStartTrade(e) {
     this.setState({inAction: true});
