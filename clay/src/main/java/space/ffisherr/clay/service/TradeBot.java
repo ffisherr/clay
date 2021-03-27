@@ -1,7 +1,6 @@
 package space.ffisherr.clay.service;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -14,10 +13,10 @@ import space.ffisherr.clay.model.TransactionRequestDTO;
 import space.ffisherr.clay.model.TransactionResponseDTO;
 import space.ffisherr.clay.repository.RsiDataRepository;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Data
@@ -25,13 +24,12 @@ import java.util.Map;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TradeBot {
 
+    private static final float ALPHA = 0.3f;
     private final BagService bagService;
     private final IntegrationService integrationService;
     private final InstrumentService instrumentService;
     private final HistoryService historyService;
     private final RsiDataRepository rsiDataRepository;
-    private final RsiCounterService rsiCounterService = new RsiCounterService();
-    private Map<String, RsiModel> rsiMap = new HashMap<>();
 
     public void doWork(String startedAt, String endedAt) {
         final int startTimeInt = Integer.parseInt(convertToString(startedAt));
@@ -41,16 +39,29 @@ public class TradeBot {
             log.error("Не найдено инструментов для торгов");
         }
         log.info("Начало работы: {} Окончание работы: {}", startTimeInt, endTimeInt);
-        for (Bag bag : bagList) {
-            rsiMap.put(bag.getWantedInstrument().getName(), new RsiModel(0f, 0f));
-        }
-        rsiCounterService.initialize(bagList, startTimeInt);
+//        initialize(bagList, startTimeInt);
         for (int i = startTimeInt; i < endTimeInt; i+=100) {
             for (Bag bag : bagList) {
                 processTransaction(bag, i, startTimeInt);
             }
         }
     }
+
+//    private void initialize(List<Bag> bagList, int startTime) {
+//        bagList.forEach(bag -> {
+//            final ClayInstrument instrument = integrationService.readTicker(bag.getWantedInstrument().getName(),
+//                    String.valueOf(startTime));
+//            final RsiData entity = new RsiData();
+//            entity.setU(0f);
+//            entity.setD(0f);
+//            entity.setRsi(0f);
+//            entity.setCurrent(Float.parseFloat("0"));
+//            entity.setPrevious(0f);
+//            entity.setInstrumentName(bag.getWantedInstrument().getName());
+//            entity.setStep(startTime);
+//            rsiDataRepository.save(entity);
+//        });
+//    }
 
     protected void processTransaction(Bag bag, int step, int startTimeInt) {
         final ClayInstrument clay = integrationService.readTicker(bag.getWantedInstrument().getName(),
@@ -59,63 +70,59 @@ public class TradeBot {
 //            log.warn("На шаге {} данные отсутствуют", step);
             return;
         }
-        final RsiModel model = rsiCounterService.getRsi(clay);
-        final List<RsiData> rsiData = rsiDataRepository.findAllByName(clay.getTicker());
-        if (rsiData.size() < 14) {
-            final RsiData r = new RsiData();
-            if (rsiData.size() == 0) {
-                r.setD("0");
-                r.setU("0");
-            } else {
-                if (model.getCurrent() > model.getPrevious()) {
-                    r.setD("0");
-                    r.setU(String.valueOf(model.getCurrent() - model.getPrevious()));
-                } else if (model.getCurrent().equals(model.getPrevious())) {
-                    r.setD("0");
-                    r.setU("0");
-                } else {
-                    r.setU("0");
-                    r.setD(String.valueOf(model.getPrevious() - model.getCurrent()));
-                }
-            }
-            r.setWantedInstrument(bag.getWantedInstrument());
-            rsiDataRepository.save(r);
+        final String ticker = clay.getTicker();
+        if (rsiDataRepository.findAllByName(ticker).isEmpty()) {
+            final RsiData entity = new RsiData();
+            entity.setU(0f);
+            entity.setD(0f);
+            entity.setRsi(0f);
+            entity.setCurrent(Float.parseFloat("0"));
+            entity.setPrevious(0f);
+            entity.setDS(0f); entity.setUS(0f);
+            entity.setInstrumentName(bag.getWantedInstrument().getName());
+            entity.setStep(step);
+            rsiDataRepository.save(entity);
             return;
         }
-        float meanU = 0f, meanD = 0f;
-        for (RsiData rD : rsiData) {
-            meanU += Float.parseFloat(rD.getU());
-            meanD += Float.parseFloat(rD.getD());
-        }
-        RsiData r = new RsiData();
-        if (model.getCurrent() > model.getPrevious()) {
-            r.setD("0");
-            r.setU(String.valueOf(model.getCurrent() - model.getPrevious()));
-        } else if (model.getCurrent().equals(model.getPrevious())) {
-            r.setD("0");
-            r.setU("0");
-        } else {
-            r.setU("0");
-            r.setD(String.valueOf(model.getPrevious() - model.getCurrent()));
-        }
-        r.setWantedInstrument(bag.getWantedInstrument());
-        r = rsiDataRepository.save(r);
-        meanU += Float.parseFloat(r.getU());
-        meanD += Float.parseFloat(r.getD());
-        meanU /= (rsiData.size() + 1);
-        meanD /= (rsiData.size() + 1);
-        float reallyFinalRs = meanU / meanD;
-        float reallyFinalRsi = 100 - (100 / (1 + reallyFinalRs));
-        log.error("Time={} RS={} RSI = {}", step, reallyFinalRs, reallyFinalRsi);
-        final RsiModel rsiCondition = rsiMap.get(bag.getWantedInstrument().getName());
-        rsiCondition.setPrevious(rsiCondition.getCurrent());
-        rsiCondition.setCurrent(reallyFinalRsi);
+        final Optional<RsiData> optionalEntity = Optional.of(rsiDataRepository.findAllByName(ticker).get(0));
+        if (optionalEntity.isPresent()) {
+            final RsiData entity = optionalEntity.get();
+            final float oldRsi = entity.getRsi();
+            RsiData newEntity = new RsiData();
+            float current = Float.parseFloat(clay.getClose());
+            newEntity.setPrevious(entity.getCurrent());
+            newEntity.setCurrent(current);
+            newEntity.setStep(step);
+            newEntity.setInstrumentName(entity.getInstrumentName());
+            if ( current > entity.getCurrent()) {
+                newEntity.setU(current - entity.getCurrent());
+                newEntity.setD(0f);
+            } else if (current < entity.getCurrent()) {
+                newEntity.setU(0f);
+                newEntity.setD(entity.getCurrent() - current);
+            } else {
+                newEntity.setU(0.0f);newEntity.setD(0.0f);
+            }
+            newEntity = rsiDataRepository.save(newEntity);
 
-        if (rsiCondition.getPrevious() > 40 && rsiCondition.getCurrent() <= 40) {
-            buyAll(bag, step);
-        } else if (rsiCondition.getPrevious() < 50 && rsiCondition.getCurrent() >= 50) {
-            sellAll(bag, step);
+            float d_s = entity.getDS() + ALPHA * (newEntity.getD() - entity.getDS());
+            float u_s = entity.getUS() + ALPHA * (newEntity.getU() - entity.getUS());
+            newEntity.setDS(d_s);
+            newEntity.setUS(u_s);
+            float rsi = 100 - (100 / (1 + (u_s / d_s)));
+            newEntity.setRsi(rsi);
+            rsiDataRepository.save(newEntity);
+            log.error("Time={} RSI={}", step, rsi);
+            if (((List<RsiData>)rsiDataRepository.findAll()).size() > 14) {
+                if (rsi >= 70 && oldRsi < 70) {
+                    sellAll(bag, step);
+                }
+                if (rsi <= 30 && oldRsi > 30) {
+                    buyAll(bag, step);
+                }
+            }
         }
+
     }
 
     private void sellAll(Bag bag, int step) {

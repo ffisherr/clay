@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 @Data
@@ -20,10 +18,14 @@ public class RsiData {
     @SequenceGenerator(name = "id_seq_r", sequenceName = "rsi_data_seq_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "wanted_instrument_id")
-    private WantedInstruments wantedInstrument;
-    private String u;
-    private String d;
+    private Float u;
+    private Float d;
+    private Float uS;
+    private Float dS;
+    private Float current;
+    private Float previous;
+    private String instrumentName;
+    private Integer step;
+    private Float rsi;
 
 }
