@@ -2,7 +2,7 @@ package space.ffisherr.clay.service;
 
 
 import space.ffisherr.clay.entity.Bag;
-import space.ffisherr.clay.entity.WantedInstruments;
+import space.ffisherr.clay.entity.RsiData;
 import space.ffisherr.clay.model.ClayInstrument;
 import space.ffisherr.clay.model.RsiModel;
 
@@ -17,21 +17,21 @@ public class RsiCounterService {
 
     public void initialize(List<Bag> instruments, int startTimeInt) {
         this.startTimeInt = startTimeInt;
-        for (Bag bag : instruments) { // FIXME
+        for (Bag bag : instruments) {
             clayMap.put(bag.getWantedInstrument().getName(), new RsiModel(0f, 0f));
         }
     }
 
-    public RsiModel getRsi(ClayInstrument instrument, int step) {
-        updateRsi(instrument, step);
+    public RsiModel getRsi(ClayInstrument instrument) {
+        updateRsi( instrument);
         return clayMap.get(instrument.getTicker());
     }
 
-    private void updateRsi(ClayInstrument instrument, int step) {
+    private void updateRsi(ClayInstrument instrument) {
         final RsiModel model = clayMap.get(instrument.getTicker());
         final Float currentValue = model.getCurrent();
         model.setPrevious(currentValue);
-        model.setCurrent((float) ((Math.random() * (100 - 1)) + 1)); // FIXME
+        model.setCurrent(Float.parseFloat(instrument.getClose()));
     }
 
 }
