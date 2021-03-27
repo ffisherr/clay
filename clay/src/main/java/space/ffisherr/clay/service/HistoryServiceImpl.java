@@ -22,6 +22,11 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
+    public List<History> readHistoryByName(String name) {
+        return repository.findByInstrument(name);
+    }
+
+    @Override
     public List<PlotXY> readByName(String name){
         final List<History> h = repository.findByInstrument(name);
         final List<PlotXY> p = new ArrayList<>();

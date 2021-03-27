@@ -9,6 +9,7 @@ import java.util.List;
 public interface HistoryService {
 
     List<History> readAll();
+    List<History> readHistoryByName(String name);
     List<PlotXY> readByName(String name);
 
     History create(String direction, Bag currentBag,

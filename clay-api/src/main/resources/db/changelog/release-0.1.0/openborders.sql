@@ -1,1 +1,1 @@
-CREATE TABLE TICKER AS SELECT * FROM CSVREAD('/C:\WORK\PROJECTS\java\hack2021\clay\clay\clay-api\src\main\resources\db\changelog\release-0.1.0\14Tickers_210113_210113.csv');
+CREATE TABLE TICKER AS SELECT * FROM CSVREAD('/home/wzor/Рабочий стол/BestHack/clay/clay-api/src/main/resources/db/changelog/release-0.1.0/14Tickers_210113_210113.csv');

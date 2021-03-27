@@ -1,18 +1,21 @@
 package space.ffisherr.clay.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import space.ffisherr.clay.entity.Bag;
 import space.ffisherr.clay.entity.History;
 import space.ffisherr.clay.entity.WantedInstruments;
 import space.ffisherr.clay.model.ClayInstrument;
 import space.ffisherr.clay.model.PlotXY;
-import space.ffisherr.clay.service.BagService;
-import space.ffisherr.clay.service.HistoryService;
-import space.ffisherr.clay.service.InstrumentService;
-import space.ffisherr.clay.service.IntegrationService;
-import space.ffisherr.clay.service.TradeBot;
+import space.ffisherr.clay.service.*;
 
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -61,6 +64,23 @@ public class InstrumentController {
     public void startTrading(@RequestParam String startTime,
                              @RequestParam String endTime) {
         tradeBot.doWork(startTime, endTime);
+    }
+
+    @GetMapping("/load-csv/")
+    public ResponseEntity<InputStreamResource> download(@RequestParam String param) throws IOException {
+        File f = null;
+        try {
+            ExportCsv.main(historyService.readHistoryByName(param));
+        } catch (Exception e) {
+        e.printStackTrace();
+    }
+        f = new File("data.csv");
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(f));
+
+        return ResponseEntity.ok()
+                .contentLength(f.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
 }
