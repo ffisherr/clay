@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TableGraph from './TableGraph';
 import './styles.css';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
-import {DropdownButton, Dropdown} from 'react-bootstrap';
+import {DropdownButton, Dropdown, Button} from 'react-bootstrap';
 import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 
 
@@ -56,6 +56,11 @@ class GraphData extends Component {
     );
   }
 
+  fetchDownload(){
+    console.log("http://localhost:8081/instruments/load-csv/?param="+this.state.activeInstrument);
+    fetch("http://localhost:8081/instruments/load-csv/?param="+this.state.activeInstrument);
+  }
+
   handleRange(e) {
     this.setState({timeRange: e});
     console.log(this.state.timeRange);
@@ -64,6 +69,7 @@ class GraphData extends Component {
 
   componentDidMount() {
       this.fetchData();
+
   }
 
   handleStartTrade(e) {
@@ -93,6 +99,12 @@ class GraphData extends Component {
                 <YAxis />
               </XYPlot>              
               <TableGraph />
+              <a href={"http://localhost:8081/instruments/load-csv/?param="+this.state.activeInstrument} download>
+              <Button
+                    onClick= {this.fetchDownload.bind(this)}
+                    variant="primary">Скачать
+                </Button>  
+                </a> 
           </div>
       );
   }
