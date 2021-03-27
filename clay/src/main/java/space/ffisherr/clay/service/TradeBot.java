@@ -24,7 +24,7 @@ import java.util.Optional;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TradeBot {
 
-    private static final float ALPHA = 0.3f;
+    private static final float ALPHA = 0.68f;
     private final BagService bagService;
     private final IntegrationService integrationService;
     private final InstrumentService instrumentService;

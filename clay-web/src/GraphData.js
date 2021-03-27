@@ -12,7 +12,8 @@ class GraphData extends Component {
       activeInstrument: '',
       plotData: [],
       timeRange: ["10:00", "18:00"],
-      transactions: []
+      transactions: [],
+      inAction: false
   }
 
   handleSelect(e) {
@@ -96,6 +97,7 @@ class GraphData extends Component {
   }
 
   handleStartTrade(e) {
+    this.setState({inAction: true});
     const timeRange = this.state.timeRange;
     const requestOptions = {
         method: 'POST',
@@ -107,7 +109,7 @@ class GraphData extends Component {
       return (
           <div>
               <TimeRangePicker value={this.state.timeRange} onChange={this.handleRange.bind(this)} />
-              <button onClick={this.handleStartTrade.bind(this)}>Запустить торги</button>
+              <button disabled={this.state.inAction} onClick={this.handleStartTrade.bind(this)}>Запустить торги</button>
               <DropdownButton id="dropdown-basic-button" title={this.state.activeInstrument}>
                 {this.state.myInstruments.map(instrument => (
                 <Dropdown.Item key={instrument.id} onClick= {this.handleSelect.bind(this)}>{instrument.name}</Dropdown.Item>))}
@@ -125,7 +127,7 @@ class GraphData extends Component {
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Дата</th>
+                            <th scope="col">Время</th>
                             <th scope="col">Направление операции</th>
                             <th scope="col">Название инструмента</th>
                             <th scope="col">Цена за ед.</th>
@@ -148,7 +150,7 @@ class GraphData extends Component {
                         <td>{transaction.totalAmount}</td>
                         <td>{transaction.leftAmount}</td>
                       </tr>
-                      ))} 
+                      ))}
                         </tbody>
                       </table>
               <a href={"http://localhost:8081/instruments/load-csv/?param="+this.state.activeInstrument} download>

@@ -7,3 +7,11 @@ div {
 p {
     padding-left: 10px;
 }
+
+.selectDiv {
+  padding-left: 200px;
+  padding-top: 10px;
+  padding-bottom: 40px;
+  line-height: 0.7;
+  border-style:solid;
+}

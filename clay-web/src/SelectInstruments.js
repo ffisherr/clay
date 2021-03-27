@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './styles.css';
+import {Button} from 'react-bootstrap';
 
 class SelectInstruments extends Component {
     state = {
@@ -70,7 +71,7 @@ class SelectInstruments extends Component {
 
     render() {
         return (
-            <div>
+            <div className="selectDiv">
                 <h2>Выберите инструменты, для работы</h2>
                 {this.state.avaliableInstruments.map(instrument => (
                     <p key={instrument.id}>
@@ -80,7 +81,7 @@ class SelectInstruments extends Component {
                         </label>
                     </p>
                 ))}
-                <button onClick={this.handleSubmit.bind(this)}>Выбрать</button>
+                <Button onClick={this.handleSubmit.bind(this)}>Выбрать</Button>
             </div>
         );
     }
