@@ -41,9 +41,15 @@ create table history (
 
 create table rsi_data (
     id bigint not null,
-    d text not null,
-    u text not null,
-    wanted_instrument_id bigint not null,
+    d float not null,
+    ds float,
+    us float,
+    u float not null,
+    current float not null default 0,
+    previous float not null default 0,
+    instrument_name text,
+    rsi float default 0,
+    step bigint,
     constraint PK_RSI_DATA_ID primary key (id)
 );
 
