@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import TableGraph from './TableGraph';
 import './styles.css';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 import {DropdownButton, Dropdown, Button} from 'react-bootstrap';
@@ -20,7 +19,7 @@ class GraphData extends Component {
     console.log(e.nativeEvent.target.text);
     this.setState({activeInstrument: e.nativeEvent.target.text});
     this.drowChart(e.nativeEvent.target.text);
-
+    this.fetchHistory(e.nativeEvent.target.text);
   }
 
   drowChart(e){
@@ -40,8 +39,8 @@ class GraphData extends Component {
     );
   }
 
-  fetchHistory(){
-    fetch("http://localhost:8081/instruments/history/read-select/?param="+this.state.activeInstrument)
+  fetchHistory(e){
+    fetch("http://localhost:8081/instruments/read-select/?param="+e)
     .then(res => res.json())
     .then(
       (res) => {
@@ -63,7 +62,12 @@ class GraphData extends Component {
     .then(
       (res) => {
         console.log(res);
-        this.setState({myInstruments: res});
+        let locA = '';
+        res.map(instrument => (locA = instrument.name));
+        this.setState({
+          myInstruments: res,
+          activeInstrument: locA
+        });
       },
       (error) => {
           console.log(error);

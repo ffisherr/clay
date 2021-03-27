@@ -2,6 +2,8 @@ package space.ffisherr.clay.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +78,7 @@ public class InstrumentController {
     }
 
     @GetMapping("/read-select/")
-    public List<History> SelectName(@RequestParam String param){
+    public List<History> selectName(@RequestParam String param){
         return historyService.readHistoryByName(param);
     }
 
@@ -89,10 +91,15 @@ public class InstrumentController {
         e.printStackTrace();
     }
         f = new File("data.csv");
+        final ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                .filename(param + ".csv").build();
         InputStreamResource resource = new InputStreamResource(new FileInputStream(f));
 
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(contentDisposition);
+
         return ResponseEntity.ok()
-                .contentLength(f.length())
+                .contentLength(f.length()).headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
