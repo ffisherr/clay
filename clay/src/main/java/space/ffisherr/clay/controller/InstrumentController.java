@@ -75,6 +75,11 @@ public class InstrumentController {
         tradeBot.doWork(startTime, endTime);
     }
 
+    @GetMapping("/read-select/")
+    public List<History> SelectName(@RequestParam String param){
+        return historyService.readHistoryByName(param);
+    }
+
     @GetMapping("/load-csv/")
     public ResponseEntity<InputStreamResource> download(@RequestParam String param) throws IOException {
         File f = null;
